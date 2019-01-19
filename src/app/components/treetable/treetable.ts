@@ -2299,16 +2299,19 @@ export class TreeTableCellEditor implements AfterContentInit {
 @Component({
     selector: 'p-treeTableToggler',
     template: `
-        <a href="#" class="ui-treetable-toggler" *ngIf="rowNode.node.leaf === false || rowNode.level !== 0 || rowNode.node.children && rowNode.node.children.length" (click)="onClick($event)" [style.visibility]="rowNode.node.leaf === false || (rowNode.node.children && rowNode.node.children.length) ? 'visible' : 'hidden'" [style.marginLeft]="rowNode.level * 16 + 'px'">
-            <i [ngClass]="rowNode.node.expanded ? 'pi pi-fw pi-chevron-down' : 'pi pi-fw pi-chevron-right'"></i>
+        <a href="#" class="ui-treetable-toggler" *ngIf="rowNode.node.leaf === false || rowNode.level !== 0 || rowNode.node.children && rowNode.node.children.length" (click)="onClick($event)" [style.visibility]="rowNode.node.leaf === false || (rowNode.node.children && rowNode.node.children.length) ? 'visible' : 'hidden'" [style.marginLeft]="!is_rtl?rowNode.level * 16 + 'px': 'auto'" [style.marginRight]="is_rtl?rowNode.level * 16 + 'px': 'auto'">
+            <i [ngClass]="rowNode.node.expanded ? 'pi pi-fw pi-chevron-down' : (is_rtl ? 'pi pi-fw pi-chevron-left' : 'pi pi-fw pi-chevron-right')"></i>
         </a>
     `
 })
 export class TreeTableToggler {
 
     @Input() rowNode: any;
+    is_rtl : boolean = false;
+    constructor(public tt: TreeTable) {
+        this.is_rtl = tt.el.nativeElement.attributes['dir'] && tt.el.nativeElement.attributes['dir'].value === 'rtl';
 
-    constructor(public tt: TreeTable) {}
+    }
 
     onClick(event: Event) {
         this.rowNode.node.expanded = !this.rowNode.node.expanded;
